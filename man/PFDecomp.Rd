@@ -23,10 +23,12 @@ PFDecomp5(coef7)
 \value{
 solution of the partial fraction decomposition:
 \itemize{
-\item \code{PFDecomp3()}: list of x1 (real),    x2 (complex), A1,     A2, B2
-\item \code{PFDecomp4()}: list of x1 (complex), x2 (complex), A1, B1, A2, B2
-\item \code{PFDecomp5()}: list of x1 (real),    x2 (complex), x3 (complex),
-A1, A2, B2, A3, B3
+\item \code{PFDecomp3()}: list of the roots and decomposition results, four types,
+i.e., \code{31}, \code{32}, \code{33}, \code{34}
+\item \code{PFDecomp4()}: list of the roots and decomposition results, nine types,
+i.e., \code{41}, \code{42}, ..., \code{49}
+\item \code{PFDecomp5()}: list of the roots and decomposition results, twelve types,
+i.e., \code{51}, \code{52}, ..., \code{512}, not fully implemented.
 }
 }
 \description{
