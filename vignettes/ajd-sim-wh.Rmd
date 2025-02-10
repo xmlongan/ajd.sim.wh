@@ -1,0 +1,104 @@
+---
+title: "ajd-sim-wh"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ajd-sim-wh}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Exact simulation of the Heston SV | SVJ | SVCJ models using the 
+Wu-Hu algorithm.
+
+## Simulate returns of the Heston SV | SVJ | SVCJ models
+
+```{r setup}
+library(ajd.sim.wh)
+# Heston SV
+v0 = 0.010201; k = 6.21; theta = 0.019; sigma = 0.61; rho = -0.7
+r = 0.0319; tau = 1
+
+par_hest = list(v0=v0, k=k, theta=theta, sigma=sigma, rho=rho, h=tau)
+moms = rep(0, 8)
+for (i in 2:8) {moms[i] = eval_mom_hest(fmu.hest[[i]], par_hest)}
+
+N = 1000 # number of samples
+Y = r_hest(1000, moms)
+
+beta = (1 - exp(-k * tau)) / (2 * k)
+Ymean = (r - theta/2) * tau - beta * (v0 - theta)
+
+Y = Y + Ymean
+hist(Y, main="Heston SV model")
+```
+
+
+```{r}
+library(ajd.sim.wh)
+# SVJ
+v0 = 0.008836; k = 3.99; theta = 0.014; sigma = 0.27; rho = -0.79
+r = 0.0319; tau = 5; lmbd = 0.11; mu_b = -0.12; sigma_s = 0.15
+
+par_hest = list(v0=v0, k=k, theta=theta, sigma=sigma, rho=rho, h=tau)
+moms = rep(0, 8)
+for (i in 2:8) {moms[i] = eval_mom_hest(fmu.hest[[i]], par_hest)}
+
+N = 1000 # number of samples
+Y = r_svj(N, tau, lmbd, mu_b, sigma_s, moms)
+
+beta = (1 - exp(-k * tau)) / (2 * k)
+mu = r - lmbd * mu_b
+Ymean = (mu - theta/2) * tau - beta * (v0 - theta) # partial mean
+
+Y = Y + Ymean
+hist(Y, main="SVJ model")
+```
+
+
+```{r}
+library(ajd.sim.wh)
+# SVCJ
+v0 = 0.007569; k = 3.46; theta = 0.008; sigma = 0.14; rho = -0.82
+r = 0.0319; tau = 1; lmbd = 0.47; mu_b = -0.1; sigma_s = 0.0001
+mu_v = 0.05; rhoJ = -0.38
+
+n = 1000
+mu = r - lmbd * mu_b
+mu_s = log((1 + mu_b) * (1 - rhoJ*mu_v)) - sigma_s^2 / 2
+h = 1
+
+par = list(v0=v0, mu=mu, k=k, theta=theta, sigma=sigma, rho=rho, lmbd=lmbd,
+           mu_v=mu_v, rhoJ=rhoJ, mu_s=mu_s, sigma_s=sigma_s, h=h)
+moms = rep(0, 8) # centralized variable whose first moment = 0
+for (i in 2:8) {moms[i] = eval_mom_svcj(fmu.svcj[[i]], par)}
+
+Y = r_svcj(n, moms)
+
+beta = (1 - exp(-k * tau)) / (2 * k)
+Ymean = lmbd * mu_v * beta / k + (rhoJ - 1/(2*k)) * lmbd * mu_v * tau
+Ymean = Ymean + lmbd * mu_s * tau + (mu - theta/2)*tau - beta*(v0 - theta)
+
+Y = Y + Ymean
+hist(Y, main="SVCJ model")
+```
+
+## Pricing the European call option Using Monte Carlo simulation
+
+If your are interested in pricing the European call option using Monte Carlo
+simulation for the Heston SV, SVJ and SVCJ models. Please refer to functions
+`?price_hest`, `?price_svj` and `?price_svcj`.
+
+## References
+
+- Kyriakou, I., Brignone, R., & Fusai, G. (2024). Unified moment-based modeling
+of integrated stochastic processes. *Operations Research*, 72(4), 1630-1653.
+
+- Broadie, M., & Kaya, Ö. (2006). Exact simulation of stochastic volatility and
+other affine jump diffusion processes. *Operations Research*, 54(2), 217-231.
