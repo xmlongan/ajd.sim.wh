@@ -118,6 +118,7 @@ r_hest <- function(n, moms) {
 }
 
 #' @rdname r_hest
+#' @export
 r_hest2 <- function(n, moms) {
   # from moments to coefficients: a, c0, c1, c2, {c3 | c4 | c4, c5}
   coefs = mom_to_coef(moms)
