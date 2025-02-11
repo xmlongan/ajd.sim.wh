@@ -5,4 +5,11 @@
 .DS_Store
 .quarto
 inst/doc
-script/
+script/analysis-Rmd
+script/archive-data
+script/archive-R
+script/archive-src
+script/debug
+script/extdata
+script/png
+script/results
