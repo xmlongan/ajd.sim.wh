@@ -34,12 +34,21 @@ bisect6 <- function(lb, ub, logC, U, pfd3, LB, rel_err=1e-5) {
 #' @export
 bisect8 <- function(lb, ub, logC, U, pfd4, LB, rel_err=1e-5) {
   x = (lb + ub) / 2
-  while (ub - lb > 1e-5) {
+  prob_next = int_p8(LB, x, pfd4, logC, rel_err)
+  while (ub - lb > 1e-7) {
     x = (lb + ub) / 2
-    prob = int_p8(LB, x, pfd4, logC, rel_err)
-    if (abs(prob - U) < 1e-5) { break }
-    else if (prob < U) { lb = x }
-    else { ub = x }
+    # prob = int_p8(LB, x, pfd4, logC, rel_err)
+    prob = prob_next
+    if (abs(prob - U) < 1e-7) {
+      break
+    } else if (prob < U) {
+      lb = x
+      prob_next = prob + int_p8(lb, (lb+ub)/2, pfd4, logC, rel_err)
+    } else {
+      ub = x
+      prob_next = prob - int_p8((lb+ub)/2, ub, pfd4, logC, rel_err)
+    }
+    # x = (lb + ub) / 2
     # cat(sprintf("U = %f, prob = %f, x = %f\n", U, prob, x))
   }
   return(x)

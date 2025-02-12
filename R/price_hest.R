@@ -22,15 +22,27 @@
 #' @export
 #'
 #' @examples
+#' # setting 1
 #' S = 100; K = 100; v0 = 0.010201; k = 6.21; theta = 0.019; sigma = 0.61
 #' rho = -0.7; r = 0.0319; tau = 1; true_price = 6.8061
 #'
 #' par_hest = list(v0=v0, k=k, theta=theta, sigma=sigma, rho=rho, h=tau)
-#'
 #' moms = rep(0, 8) # centralized variable, whose first moment always = 0
 #' for (i in 2:8) {moms[i] = eval_mom_hest(fmu.hest[[i]], par_hest)}
 #'
 #' price_hest(10000, S, K, v0, tau, r, k, theta, moms, true_price)
+#'
+#' # setting 2
+#' S = 100; K = 100; v0 = 0.09; k = 2.00; theta = 0.09; sigma = 1.00
+#' rho = -0.3; r = 0.05; tau = 5
+#' true_price = 34.9998
+#'
+#' par_hest = list(v0=v0, k=k, theta=theta, sigma=sigma, rho=rho, h=tau)
+#' moms = rep(0, 8) # centralized variable, whose first moment always = 0
+#' for (i in 2:8) {moms[i] = eval_mom_hest(fmu.hest[[i]], par_hest)}
+#'
+#' price_hest(10000, S, K, v0, tau, r, k, theta, moms, true_price)
+#'
 price_hest <- function(N, S, K, v0, tau, r, k, theta, moms, true_price) {
   # start.time = Sys.time()
   ts = proc.time()

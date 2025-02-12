@@ -60,5 +60,13 @@ for (i in 2:8) {moms8[i] = eval_mom_hest(fmu.hest[[i]], par)}
 n = 100
 Y = r_hest(n, moms8)
 
+# n = 2560000
+n = 10000
+time.start = proc.time()
+Y = r_hest2(n, moms8)
+time.end   = proc.time()
+time.taken = time.end - time.start
+time.taken
+
 # moms6 = c(0.0231, 0.0191, -0.0021, 0.0020, -0.0010, 0.0008)
 }

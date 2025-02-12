@@ -66,57 +66,10 @@ mom_to_coef <- function(moms) {
       m5, -5*m4, -6*m5, -7*m6, -8*m7, -9*m8, -10*m9,
       m6, -6*m5, -7*m6, -8*m7, -9*m8, -10*m9, -11*m10
     )
-    A = matrix(A, nrow = 7, ncol = 7, byrow = TRUE)
+    A = matrix(A, nrow = 7, ncol = 7, byrow = TRUE)  # Note the difference
     #A = t(A)
     b = moms[1:7]
   } else { stop("either match the first 6|8|10 moments, no other options") }
   x = solve(A, -b)
   return(x)
 }
-
-
-# mom_to_coef <- function(moms) {
-#   N = length(moms)
-#   if (N < 6) stop("at least match the first 6 moments")
-#   m1 = moms[1]; m2 = moms[2]; m3 = moms[3]
-#   m4 = moms[4]; m5 = moms[5]; m6 = moms[6]
-#   if (N >= 8)  { m7 = moms[7]; m8 = moms[8] }
-#   if (N >= 10) { m9 = moms[9]; m10 = moms[10] }
-#   #
-#   if (N == 6) {
-#     A = c(
-#       1,    m1,    m2,    m3,    m4,
-#       0,    -1, -2*m1, -3*m2, -4*m3,
-#       -1, -2*m1, -3*m2, -4*m3, -5*m4,
-#       -2*m1, -3*m2, -4*m3, -5*m4, -6*m5,
-#       -3*m2, -4*m3, -5*m4, -6*m5, -7*m6
-#     )
-#     A = matrix(A, nrow = 5, ncol = 5, byrow = FALSE)
-#     b = moms[1:5]
-#   } else if (N == 8) {
-#     A = c(
-#       1,    m1,    m2,    m3,    m4,    m5,
-#       0,    -1, -2*m1, -3*m2, -4*m3, -5*m4,
-#       -1, -2*m1, -3*m2, -4*m3, -5*m4, -6*m5,
-#       -2*m1, -3*m2, -4*m3, -5*m4, -6*m5, -7*m6,
-#       -3*m2, -4*m3, -5*m4, -6*m5, -7*m6, -8*m7,
-#       -4*m3, -5*m4, -6*m5, -7*m6, -8*m7, -9*m8
-#     )
-#     A = matrix(A, nrow = 6, ncol = 6, byrow = FALSE)
-#     b = moms[1:6]
-#   } else if (N == 10) {
-#     A = c(
-#       1,      0,    -1, -2*m1, -3*m2, -4*m3, -5*m4,
-#       m1,    -1, -2*m1, -3*m2, -4*m3, -5*m4, -6*m5,
-#       m2, -2*m1, -3*m2, -4*m3, -5*m4, -6*m5, -7*m6,
-#       m3, -3*m2, -4*m3, -5*m4, -6*m5, -7*m6, -8*m7,
-#       m4, -4*m3, -5*m4, -6*m5, -7*m6, -8*m7, -9*m8,
-#       m5, -5*m4, -6*m5, -7*m6, -8*m7, -9*m8, -10*m9,
-#       m6, -6*m5, -7*m6, -8*m7, -9*m8, -10*m9, -11*m10
-#     )
-#     A = matrix(A, nrow = 7, ncol = 7, byrow = FALSE)
-#     b = moms[1:7]
-#   } else { stop("either match the first 6|8|10 moments, no other options") }
-#   x = solve(A, -b)
-#   return(x)
-# }
