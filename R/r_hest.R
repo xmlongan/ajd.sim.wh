@@ -229,7 +229,7 @@ r_hest2 <- function(n, moms) {
         Newton_Fail = TRUE; next
       }
       j = j + 1
-      if (abs(x - x0) < 1e-5) { break }
+      if (abs(x - x0) < 1e-7) { break }
       #
       if (x > x0) {
         prob_next = prob + int_p(x0, x, pfd, logC, rel_err = 1e-5)
