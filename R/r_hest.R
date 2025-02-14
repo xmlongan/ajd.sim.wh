@@ -148,9 +148,9 @@ r_hest2 <- function(n, moms) {
   skew = stdmoment[3]
   #
   if (skew < 0) {        # left-tailed
-    lb = -7*sd; ub = 3.5*sd
+    lb = -7*sd; ub = 4*sd
   } else if (skew > 0) { # right-tailed
-    lb = -3.5*sd; ub = 7*sd
+    lb = -4*sd; ub = 7*sd
   } else {               # symmetric
     lb = -5*sd; ub = 5*sd
   }
@@ -158,16 +158,17 @@ r_hest2 <- function(n, moms) {
   lb = lbub[1]; ub = lbub[2]
   #
   logC_type = comp_logC(lb, ub, pfd, rel_err = 1e-7)
+  logC = logC_type$logC
   if (logC_type$type == -2) {
-    cat("resort to PearsonDS::rpearson() C either too big or small.\n")
+    printf("resort to PearsonDS::rpearson(), C = %E (too big or small)\n", exp(logC))
     return(PearsonDS::rpearson(n, moments=stdmom(moms[1:4])))
   }
-  logC = logC_type$logC
   # printf("logC = %f, C = %E\n", logC, exp(logC))
   #
   Us = stats::runif(n)
   # ts = proc.time()
-  x0s = stats::qnorm(Us, mean = 0, sd = sd)
+  mode = -coefs[1] # mode of the distribution
+  x0s = stats::qnorm(Us, mean = mode, sd = sd)
   # x0s = PearsonDS::qpearson(Us, moments = stdmoment) # initial guess matters
   # setting 1: very fast
   # setting 2: consume 60 seconds more or less!
@@ -180,16 +181,16 @@ r_hest2 <- function(n, moms) {
     U = Us[i]
     x0 = x0s[i]
     if (U > 0.99) {
-      xlb = ifelse(x0-2*sd < ub, x0-2*sd, ub)
-      xub = ifelse(x0+2*sd < ub, x0+2*sd, ub)
-      x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-5)
+      xlb = max(lb, x0 - 2*sd)
+      xub = min(ub, x0 + 2*sd)
+      x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
       Xs[i] = x
       next
     }
     if (U < 0.01) {
-      xlb = ifelse(x0-2*sd > lb, x0-2*sd, lb)
-      xub = ifelse(x0+2*sd > lb, x0+2*sd, lb)
-      x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-5)
+      xlb = max(lb, x0 - 2*sd)
+      xub = min(ub, x0 + 2*sd)
+      x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
       Xs[i] = x
       next
     }
@@ -202,9 +203,9 @@ r_hest2 <- function(n, moms) {
       if (x0 < lb || x0 > ub || j > 10 || Newton_Fail) {
         # fmt = "bisect: U=%f, lb=% f, x0=% f, ub=%f, j=%i, Newton_Fail=%i\n"
         # printf(fmt, U, lb, x0, ub, j, Newton_Fail)
-        xlb = ifelse(x0-2*sd > lb, x0-2*sd, lb)
-        xub = ifelse(x0+2*sd < ub, x0+2*sd, ub)
-        x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-5)
+        xlb = max(lb, x0 - 2*sd)
+        xub = min(ub, x0 + 2*sd)
+        x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
         if (x <= lb || x >= ub) {
           x_exception(logC_type, lb, ub, U, x0, x, j, moms)
         }
@@ -231,9 +232,9 @@ r_hest2 <- function(n, moms) {
       if (abs(x - x0) < 1e-5) { break }
       #
       if (x > x0) {
-        prob_next = prob + int_p(x0, x, pfd, logC, rel_err = 1e-3)
+        prob_next = prob + int_p(x0, x, pfd, logC, rel_err = 1e-5)
       } else if (x < x0) {
-        prob_next = prob - int_p(x, x0, pfd, logC, rel_err = 1e-3)
+        prob_next = prob - int_p(x, x0, pfd, logC, rel_err = 1e-5)
       }
       #
       x0 = x
