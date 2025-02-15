@@ -148,16 +148,16 @@ r_hest2 <- function(n, moms) {
   skew = stdmoment[3]
   #
   if (skew < 0) {        # left-tailed
-    lb = -7*sd; ub = 4*sd
+    lb = -7*sd; ub = 4.5*sd
   } else if (skew > 0) { # right-tailed
-    lb = -4*sd; ub = 7*sd
+    lb = -4.5*sd; ub = 7*sd
   } else {               # symmetric
     lb = -5*sd; ub = 5*sd
   }
   lbub = adjust_lb_ub(lb, ub, pfd)
   lb = lbub[1]; ub = lbub[2]
   #
-  logC_type = comp_logC(lb, ub, pfd, rel_err = 1e-7)
+  logC_type = comp_logC(lb, ub, pfd, rel_err = 1e-10)
   logC = logC_type$logC
   if (logC_type$type == -2) {
     printf("resort to PearsonDS::rpearson(), C = %E (too big or small)\n", exp(logC))
@@ -180,32 +180,32 @@ r_hest2 <- function(n, moms) {
   for (i in 1:n) {
     U = Us[i]
     x0 = x0s[i]
-    if (U > 0.99) {
-      xlb = max(lb, x0 - 2*sd)
-      xub = min(ub, x0 + 2*sd)
-      x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
-      Xs[i] = x
-      next
-    }
-    if (U < 0.01) {
-      xlb = max(lb, x0 - 2*sd)
-      xub = min(ub, x0 + 2*sd)
-      x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
-      Xs[i] = x
-      next
-    }
+    # if (U > 0.99) {
+    #   xlb = max(lb, x0 - 2*sd)
+    #   xub = min(ub, x0 + 2*sd)
+    #   x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
+    #   Xs[i] = x
+    #   next
+    # }
+    # if (U < 0.01) {
+    #   xlb = max(lb, x0 - 2*sd)
+    #   xub = min(ub, x0 + 2*sd)
+    #   x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
+    #   Xs[i] = x
+    #   next
+    # }
     #
     j = 0
     Newton_Fail = FALSE
     #
-    prob_next = int_p(lb, x0, pfd, logC, rel_err = 1e-7)
+    prob_next = int_p(lb, x0, pfd, logC, rel_err = 1e-10)
     repeat {
-      if (x0 < lb || x0 > ub || j > 10 || Newton_Fail) {
+      if (Newton_Fail || x0 < lb || x0 > ub || j > 10) {
         # fmt = "bisect: U=%f, lb=% f, x0=% f, ub=%f, j=%i, Newton_Fail=%i\n"
         # printf(fmt, U, lb, x0, ub, j, Newton_Fail)
         xlb = max(lb, x0 - 2*sd)
         xub = min(ub, x0 + 2*sd)
-        x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
+        x = bisect(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-10)
         if (x <= lb || x >= ub) {
           x_exception(logC_type, lb, ub, U, x0, x, j, moms)
         }
@@ -229,12 +229,12 @@ r_hest2 <- function(n, moms) {
         Newton_Fail = TRUE; next
       }
       j = j + 1
-      if (abs(x - x0) < 1e-7) { break }
+      if (abs(x - x0) < 1e-10) { break }
       #
       if (x > x0) {
-        prob_next = prob + int_p(x0, x, pfd, logC, rel_err = 1e-5)
+        prob_next = prob + int_p(x0, x, pfd, logC, rel_err = 1e-7)
       } else if (x < x0) {
-        prob_next = prob - int_p(x, x0, pfd, logC, rel_err = 1e-5)
+        prob_next = prob - int_p(x, x0, pfd, logC, rel_err = 1e-7)
       }
       #
       x0 = x

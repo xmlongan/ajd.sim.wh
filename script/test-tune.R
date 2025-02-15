@@ -10,7 +10,7 @@ moms = rep(0, 8) # centralized variable, whose first moment always = 0
 for (i in 2:8) {moms[i] = eval_mom_hest(fmu.hest[[i]], par_hest)}
 
 N = 160000
-G = 200
+G = 20
 err = rep(0, G)
 dur = rep(0, G)
 

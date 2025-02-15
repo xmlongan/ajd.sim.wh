@@ -43,7 +43,8 @@ rpearson8 <- function(n, moms) {
   q = seq(lb, ub, h)
   p = rep(0, length(q)) # sub probabilities (un-normalized)
   for (i in 2:length(q)) {
-    p[i] = stats::integrate(dpearson8, q[i-1], q[i], pfd, rel.tol = 1e-7)$value
+    subprob = stats::integrate(dpearson8, q[i-1], q[i], pfd, rel.tol = 1e-7)
+    p[i] = subprob$value
   }
   C = sum(p)
   logC = log(C)
@@ -69,9 +70,9 @@ rpearson8 <- function(n, moms) {
   IL = Us > 0.99     # large
   IN = (!IS) & (!IL) # normal
   #
-  US = Us[IS]; x0S = x0s[IS]; XS = rep(0, length(IS))
-  UL = Us[IL]; x0L = x0s[IL]; XL = rep(0, length(IL))
-  UN = Us[IN]; x0N = x0s[IN]; XN = rep(0, length(IN))
+  US = Us[IS]; x0S = x0s[IS]; XS = rep(0, sum(IS))
+  UL = Us[IL]; x0L = x0s[IL]; XL = rep(0, sum(IL))
+  UN = Us[IN]; x0N = x0s[IN]; XN = rep(0, sum(IN))
   #
   rm(IS, IL, IN, Us, x0s)
   #
@@ -136,52 +137,4 @@ rpearson8 <- function(n, moms) {
     XN[i] = x
   }
   return(c(XS, XN, XL))
-  #
-  # Xs = rep(0, n)
-  for (i in 1:n) {
-    U = Us[i]
-    x0 = x0s[i]
-    #
-    j = 0
-    Newton_Fail = FALSE
-    #
-    i_xlb = floor((x0 - lb)/h) + 1
-    prob_next = p[i_xlb] + int_p8(q[i_xlb], x0, pfd, logC, rel_err=1e-7)
-    repeat {
-      if (Newton_Fail || x0 < lb || x0 > ub || j > 10 ) {
-        xlb = max(lb, x0-2*sd)
-        xub = min(ub, x0+2*sd)
-        x = bisect8(xlb, xub, logC, U, pfd, LB = lb, rel_err = 1e-7)
-        break
-      }
-      prob = prob_next
-      f = prob - U
-      df = exp(log_dpearson8(x0, pfd) - logC)
-      f_df = f / df
-      ddf_df = - (coefs[1] + x0)/sum(coefs[2:6] * (x0^(0:4)))
-      delta = 1 - 2 * (f_df) * ddf_df
-      if (prob < 0 || prob > 1) {
-        fmt = "C=%E, f=%-e - %.7f, f/df=%-e, ddf/df=%-e, delta=%-e\n"
-        printf(fmt, C, prob, U, f_df, ddf_df, delta)
-      }
-      #
-      if (delta >= 0 && ddf_df != 0) {
-        x = x0 - (1 - sqrt(delta)) / ddf_df
-      } else {
-        Newton_Fail = TRUE; next
-      }
-      j = j + 1
-      if (abs(x - x0) < 1e-5) {break}
-      #
-      if (x > x0) {
-        prob_next = prob + int_p8(x0, x, pfd, logC, rel_err = 1e-5)
-      } else if (x < x0) {
-        prob_next = prob - int_p8(x, x0, pfd, logC, rel_err = 1e-5)
-      }
-      #
-      x0 = x
-    }
-    Xs[i] = x
-  }
-  return(Xs)
 }
