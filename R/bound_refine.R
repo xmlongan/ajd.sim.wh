@@ -66,7 +66,7 @@ refine <- function(UC, lb, ub, px_lb, dx_lb, pfd, pfd_tp) {
   else if (pfd_tp == 5) dpearson = dpearson10
   else stop("pfd_tp must be one of 3, 4, 5")
   #
-  while (ub - lb > 1e-7) {
+  while (ub - lb > 1e-10) {
     x0 = x
     dx = dpearson(x, pfd)
     px = px_lb + (x - lb) * (dx_lb + dx) / 2

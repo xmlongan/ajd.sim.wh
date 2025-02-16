@@ -43,7 +43,7 @@ rpearson8 <- function(n, moms) {
   q = seq(lb, ub, h)
   p = rep(0, length(q)) # sub probabilities (un-normalized)
   for (i in 2:length(q)) {
-    subprob = stats::integrate(dpearson8, q[i-1], q[i], pfd, rel.tol = 1e-7)
+    subprob = stats::integrate(dpearson8, q[i-1], q[i], pfd, rel.tol = 1e-10)
     p[i] = subprob$value
   }
   C = sum(p)
@@ -51,7 +51,7 @@ rpearson8 <- function(n, moms) {
   # normalize the probability
   p = cumsum(p)/C
   #
-  Us = stats::runif(n)
+  Us = sort(stats::runif(n)) # sorted
   #
   # initial guess
   #
@@ -81,14 +81,14 @@ rpearson8 <- function(n, moms) {
     x0 = x0S[i]
     xlb = max(lb, x0 - 2*sd)
     xub = min(ub, x0 + 2*sd)
-    XS[i] = bisect8(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
+    XS[i] = bisect8(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-10)
   }
   for (i in 1:length(XL)) {
     U = UL[i]
     x0 = x0L[i]
     xlb = max(lb, x0 - 2*sd)
     xub = min(ub, x0 + 2*sd)
-    XL[i] = bisect8(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-7)
+    XL[i] = bisect8(xlb, xub, logC, U, pfd, LB = lb, rel_err=1e-10)
   }
   #
   for (i in 1:length(XN)) {
@@ -98,13 +98,14 @@ rpearson8 <- function(n, moms) {
     Newton_Fail = FALSE
     #
     i_xlb = floor((x0 - lb)/h) + 1
-    prob_next = p[i_xlb] + int_p8(q[i_xlb], x0, pfd, logC, rel_err=1e-7)
+    prob_next = p[i_xlb] + int_p8(q[i_xlb], x0, pfd, logC, rel_err=1e-10)
     repeat {
       if (Newton_Fail || x0 < lb || x0 > ub || j > 10 ) {
-        printf("Newton_Fail = %i, resort to bisect\n", Newton_Fail)
+        printf("Newton=%i, lb=%f, ub=%f, U=%f, x0=%f, j=%i\n",
+               !Newton_Fail, lb, ub, U, x0, j)
         xlb = max(lb, x0-2*sd)
         xub = min(ub, x0+2*sd)
-        x = bisect8(xlb, xub, logC, U, pfd, LB = lb, rel_err = 1e-7)
+        x = bisect8(xlb, xub, logC, U, pfd, LB = lb, rel_err = 1e-10)
         break
       }
       prob = prob_next
@@ -113,6 +114,7 @@ rpearson8 <- function(n, moms) {
       f_df = f / df
       ddf_df = - (coefs[1] + x0)/sum(coefs[2:6] * (x0^(0:4)))
       delta = 1 - 2 * (f_df) * ddf_df
+      #
       if (prob < 0 || prob > 1) {
         fmt = "C=%E, f=%-e - %.7f, f/df=%-e, ddf/df=%-e, delta=%-e\n"
         printf(fmt, C, prob, U, f_df, ddf_df, delta)
@@ -124,12 +126,12 @@ rpearson8 <- function(n, moms) {
         Newton_Fail = TRUE; next
       }
       j = j + 1
-      if (abs(x - x0) < 1e-5) {break}
+      if (abs(x - x0) < 1e-10) {break}
       #
       if (x > x0) {
-        prob_next = prob + int_p8(x0, x, pfd, logC, rel_err = 1e-5)
+        prob_next = prob + int_p8(x0, x, pfd, logC, rel_err = 1e-7)
       } else if (x < x0) {
-        prob_next = prob - int_p8(x, x0, pfd, logC, rel_err = 1e-5)
+        prob_next = prob - int_p8(x, x0, pfd, logC, rel_err = 1e-7)
       }
       #
       x0 = x

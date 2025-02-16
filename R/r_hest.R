@@ -86,9 +86,9 @@ r_hest <- function(n, moms) {
   #
   N = 10000
   if (skew < 0) {        # left-tailed
-    x = seq(mode - 7 * sd, mode + 3 * sd, length.out = N)
+    x = seq(mode - 7 * sd, mode + 4.5 * sd, length.out = N)
   } else if (skew > 0) { # right-tailed
-    x = seq(mode - 3 * sd, mode + 7 * sd, length.out = N)
+    x = seq(mode - 4.5 * sd, mode + 7 * sd, length.out = N)
   } else {               # symmetric
     x = seq(mode - 5 * sd, mode + 5 * sd, length.out = N)
   }

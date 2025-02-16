@@ -23,3 +23,4 @@ for (g in 1:G) {
 printf("RMSE = %f, cptm = %f\n", sqrt(mean(err[err != 0]^2)), mean(dur[dur != 0]))
 hist(err[err!=0])
 hist(dur[dur!=0])
+

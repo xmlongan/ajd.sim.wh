@@ -59,7 +59,8 @@ price_svcj <- function(N, S, K, v0, tau, r, k, theta, lmbd, mu_v, mu_b, rhoJ,
                        sigma_s, moms, true_price) {
   # start.time = Sys.time()
   ts = proc.time()
-  Y = r_svcj(N, moms)
+  # Y = r_svcj(N, moms)
+  Y = r_hest(N, moms)
   #
   mu = r - lmbd * mu_b
   beta = (1 - exp(-k * tau)) / (2 * k)
