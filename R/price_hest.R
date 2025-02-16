@@ -49,8 +49,8 @@ price_hest <- function(N, S, K, v0, tau, r, k, theta, moms, true_price) {
   #
   beta = (1 - exp(-k * tau)) / (2 * k)
   # adding back the non-random part
-  # Y = (r - theta / 2) * tau - beta * (v0 - theta) + r_hest(N, moms)
-  Y = (r - theta / 2) * tau - beta * (v0 - theta) + r_hest1(N, moms)
+  Y = (r - theta / 2) * tau - beta * (v0 - theta) + r_hest(N, moms)
+  # Y = (r - theta / 2) * tau - beta * (v0 - theta) + r_hest1(N, moms)
   # Y = (r - theta / 2) * tau - beta * (v0 - theta) + r_hest2(N, moms)
   # Y = (r - theta / 2) * tau - beta * (v0 - theta) + rpearson8(N, moms)
   #
