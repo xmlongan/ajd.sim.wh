@@ -86,9 +86,9 @@ r_hest <- function(n, moms) {
   #
   N = 10000
   if (skew < 0) {        # left-tailed
-    x = seq(mode - 7 * sd, mode + 4.5 * sd, length.out = N)
+    x = seq(mode - 7.5 * sd, mode + 4.5 * sd, length.out = N)
   } else if (skew > 0) { # right-tailed
-    x = seq(mode - 4.5 * sd, mode + 7 * sd, length.out = N)
+    x = seq(mode - 4.5 * sd, mode + 7.5 * sd, length.out = N)
   } else {               # symmetric
     x = seq(mode - 5 * sd, mode + 5 * sd, length.out = N)
   }
@@ -148,9 +148,9 @@ r_hest2 <- function(n, moms) {
   skew = stdmoment[3]
   #
   if (skew < 0) {        # left-tailed
-    lb = -7*sd; ub = 4.5*sd
+    lb = -7.5*sd; ub = 4.5*sd
   } else if (skew > 0) { # right-tailed
-    lb = -4.5*sd; ub = 7*sd
+    lb = -4.5*sd; ub = 7.5*sd
   } else {               # symmetric
     lb = -5*sd; ub = 5*sd
   }
@@ -163,7 +163,7 @@ r_hest2 <- function(n, moms) {
     printf("resort to PearsonDS::rpearson(), C = %E (too big or small)\n", exp(logC))
     return(PearsonDS::rpearson(n, moments=stdmom(moms[1:4])))
   }
-  # printf("logC = %f, C = %E\n", logC, exp(logC))
+  printf("logC = %f, C = %E\n", logC, exp(logC))
   #
   Us = stats::runif(n)
   # ts = proc.time()

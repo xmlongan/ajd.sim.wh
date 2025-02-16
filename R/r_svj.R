@@ -64,6 +64,7 @@ r_svj <- function(n, tau, lmbd, mu_b, sigma_s, moms) {
   mu_s = log(1 + mu_b) - sigma_s^2 / 2
   #
   Y_c = r_hest(n, moms)
+  # Y_c = r_hest2(n, moms)
   Y_J = rep(0, n)
   #
   numJ = stats::rpois(n, lmbd * tau)
