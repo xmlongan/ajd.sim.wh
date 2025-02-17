@@ -90,7 +90,7 @@ r_hest <- function(n, moms) {
     if (skew < -1) {
       x = seq(-8 * sd, 4 * sd, length.out = N)
     } else {
-      x = seq(-7 * sd, 3.5 * sd, length.out = N)
+      x = seq(-7 * sd, 4 * sd, length.out = N)
     }
   } else if (skew > 0) { # right-tailed
     # x = seq(mode - 4 * sd, mode + 8 * sd, length.out = N)
