@@ -94,10 +94,14 @@ r_hest <- function(n, moms) {
     }
   } else if (skew > 0) { # right-tailed
     # x = seq(mode - 4 * sd, mode + 8 * sd, length.out = N)
-    x = seq(-4 * sd, 8 * sd, length.out = N)
+    if (skew > 1) {
+      x = seq(-4 * sd, 8 * sd, length.out = N)
+    } else {
+      x = seq(-5 * sd, 7 * sd, length.out = N)
+    }
   } else {               # symmetric
     # x = seq(mode - 5 * sd, mode + 5 * sd, length.out = N)
-    x = seq(-5 * sd, 5 * sd, length.out = N)
+    x = seq(-6 * sd, 6 * sd, length.out = N)
   }
   # Discretize and evaluate
   #
