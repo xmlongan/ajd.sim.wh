@@ -26,8 +26,6 @@ The extended models include
 
 - SVJ: SV model with jumps in the price process.
 
-- SVVJ: SV with jumps in the variance process.
-
 - SVCJ: SV model with contemporaneous jumps both in the price and variance
   processes.
 
