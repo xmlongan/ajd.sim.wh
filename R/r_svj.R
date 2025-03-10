@@ -38,13 +38,13 @@
 #'   y_{hest,t} = (\mu - \theta/2)t - \beta_t (v_0 -\theta) +
 #'   \overline{y}_{hest,t}|v_0,
 #' }
-#' See [ajd.sim.wh::r_hest()] for
+#' See [ajd.sim.wh::rpearson()] for
 #' generating \eqn{\overline{y}_{hest,t}|v_0} samples from the Heston
 #' SV model.
 #' The function [ajd.sim.wh::r_svj()] generates the
 #' \eqn{\overline{y}_{hest,t}|v_0 + I\!Z_t} samples.
 #'
-#' @seealso [ajd.sim.wh::r_hest()]
+#' @seealso [ajd.sim.wh::rpearson()]
 #' @return vector of \eqn{\overline{y}_{hest,t}|v_0 + I\!Z_t} samples.
 #' @export
 #'
@@ -63,8 +63,7 @@ r_svj <- function(n, tau, lmbd, mu_b, sigma_s, moms) {
   # Now moms is computed with mu = r-lmbd*mu_b
   mu_s = log(1 + mu_b) - sigma_s^2 / 2
   #
-  Y_c = r_hest(n, moms)
-  # Y_c = r_hest2(n, moms)
+  Y_c = rpearson(n, moms)
   Y_J = rep(0, n)
   #
   numJ = stats::rpois(n, lmbd * tau)

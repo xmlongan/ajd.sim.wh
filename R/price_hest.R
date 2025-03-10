@@ -17,7 +17,33 @@
 #' @param true_price theoretical price of the option, calculable from
 #' the Heston (1993) method.
 #'
-#' @seealso [ajd.sim.wh::r_hest()]
+#' @details
+#' The Heston SV model is described by the following SDEs:
+#' \deqn{
+#'   d\log s(t) = (\mu - v(t)/2)dt + \sqrt{v(t)}dw^s(t),
+#' }
+#' \deqn{
+#'   dv(t) = k(\theta - v(t))dt + \sigma_v\sqrt{v(t)}dw^v(t),
+#' }
+#' where the correlation between \eqn{w^s(t)} and \eqn{w^v(t)} is equal to
+#' \eqn{\rho}, i.e., \eqn{cov(w^s(t), w^v(t)) = \rho t}.
+#' The (conditional, with \eqn{v_0} given) return over period \eqn{[0,t]}
+#' is defined as \eqn{y_t \equiv \log s(t) - \log s(0)}
+#' which is decomposed as
+#' \deqn{
+#'   y_t = (\mu - \theta/2)t - \beta_t (v_0 -\theta) + \overline{y}_t|v_0,
+#' }
+#' where \eqn{\beta_t = (1-e^{-kt})/(2k)} and the centralized conditional
+#' return
+#' \deqn{
+#'   \overline{y}_t|v_0 = \frac{\sigma_v}{2k}e^{-kt}I\!E_t +
+#'   \left(\rho - \frac{\sigma_v}{2k}\right)I_t +
+#'   \sqrt{1-\rho^2}I_t^{*}.
+#' }
+#' Given the initial variance \eqn{v_0}, the function generate samples of
+#' the centralized conditional return \eqn{\overline{y}_t|v_0}.
+#'
+#' @seealso [ajd.sim.wh::rpearson()]
 #' @return vector of pricing error and consumed time (simulation).
 #' @export
 #'
@@ -44,24 +70,13 @@
 #' price_hest(10000, S, K, v0, tau, r, k, theta, moms, true_price)
 #'
 price_hest <- function(N, S, K, v0, tau, r, k, theta, moms, true_price) {
-  # start.time = Sys.time()
   ts = proc.time()
-  #
   beta = (1 - exp(-k * tau)) / (2 * k)
   # adding back the non-random part
-  Y = (r - theta / 2) * tau - beta * (v0 - theta) + r_hest(N, moms)
-  # Y = (r - theta / 2) * tau - beta * (v0 - theta) + r_hest1(N, moms)
-  # Y = (r - theta / 2) * tau - beta * (v0 - theta) + r_hest2(N, moms)
-  # Y = (r - theta / 2) * tau - beta * (v0 - theta) + rpearson8(N, moms)
-  #
+  Y = (r - theta / 2) * tau - beta * (v0 - theta) + rpearson(N, moms)
   cprice_MC = exp(-r * tau) * mean(pmax(S * exp(Y) - K, 0))
-  # end.time = Sys.time()
   te = proc.time()
   tt = te - ts
-  # time.taken = end.time - start.time
-  # time.taken = difftime(end.time, start.time, units = "secs")
   error = cprice_MC - true_price
-  #
-  # return(c(error, as.numeric(time.taken)))
-  return(c(error, tt[[3]]))
+  return(c(error, tt[[3]]))  # return the elapsed time
 }

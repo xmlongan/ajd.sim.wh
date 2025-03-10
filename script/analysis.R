@@ -68,3 +68,18 @@ for (i in 1:length(fnames)) {
 df_svcj = data.frame(No_simulation=No_simulation, RMSE=RMSE, Computing_time=cptm)
 write.csv(df_svcj, file="script/df_svcj_wh.csv")
 
+# SVCJ-WH steady state distribution
+No_simulation = c(1, 4, 16, 64, 256) * 10000
+txts = c("0010","0040","0160","0640","2560")
+fnames = paste0("script/unc-svcj-moms8-", txts, "K.csv")
+RMSE = rep(0, length(txts))
+cptm = rep(0, length(txts))
+for (i in 1:length(fnames)) {
+  error_dur <- read_csv(fnames[i])
+  error = error_dur$error - 7.109439 #7.103647
+  ctime = error_dur$computing_time
+  RMSE[i] = sqrt(mean(error^2))
+  cptm[i] = mean(ctime)
+}
+df_svcj_unc = data.frame(No_simulation=No_simulation, RMSE=RMSE, Computing_time=cptm)
+write.csv(df_svcj_unc, file="script/df_svcj_wh_unc.csv")

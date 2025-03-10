@@ -55,7 +55,7 @@ decomposed as
   y_{hest,t} = (\mu - \theta/2)t - \beta_t (v_0 -\theta) +
   \overline{y}_{hest,t}|v_0,
 }
-See \code{\link[=r_hest]{r_hest()}} for
+See \code{\link[=rpearson]{rpearson()}} for
 generating \eqn{\overline{y}_{hest,t}|v_0} samples from the Heston
 SV model.
 The function \code{\link[=r_svj]{r_svj()}} generates the
@@ -74,5 +74,5 @@ for (i in 2:8) {moms8[i] = eval_mom_hest(fmu.hest[[i]], par)}
 Y = r_svj(n, tau, lmbd, mu_b, sigma_s, moms8)
 }
 \seealso{
-\code{\link[=r_hest]{r_hest()}}
+\code{\link[=rpearson]{rpearson()}}
 }

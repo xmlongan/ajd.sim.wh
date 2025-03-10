@@ -2,12 +2,11 @@
 % Please edit documentation in R/bound_refine.R
 \name{bound_refine}
 \alias{bound_refine}
-\alias{bd_refine}
 \alias{bound}
 \alias{refine}
 \title{Bound and Refine to Find the Target Quantile}
 \usage{
-bd_refine(UC, px, dx, x, pfd, pfd_tp)
+bound_refine(UC, px, dx, x, pfd, pfd_tp)
 
 bound(UC, px)
 

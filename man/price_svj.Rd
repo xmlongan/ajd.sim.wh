@@ -34,7 +34,7 @@ Meanwhile the expected return per unit time of the SVJ model becomes
 \item{sigma_s}{parameter \eqn{\sigma_s}, standard deviation of the jumps,
 see Broadie-Kaya (2006).}
 
-\item{moms}{vector of the first six|eight|ten conditional moments of
+\item{moms}{vector of the first eight conditional moments of
 the centralized return of the Heston SV model}
 
 \item{true_price}{theoretical true price of the option, calculable by
@@ -57,8 +57,7 @@ moms = rep(0, 8) # centralized variable, whose first moment always = 0
 for (i in 2:8) {moms[i] = eval_mom_hest(fmu.hest[[i]], par_hest)}
 
 N = 10000
-price_svj(N, S, K, v0, tau, r, k, theta, lmbd, mu_b, sigma_s, moms,
-          true_price)
+price_svj(N, S, K, v0, tau, r, k, theta, lmbd, mu_b, sigma_s,moms,true_price)
 }
 \seealso{
 \code{\link[=r_svj]{r_svj()}}

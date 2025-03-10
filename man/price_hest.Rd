@@ -36,6 +36,32 @@ vector of pricing error and consumed time (simulation).
 Pricing the European call option under the Heston model using the
 Wu-Hu (2024) method for the simulation.
 }
+\details{
+The Heston SV model is described by the following SDEs:
+\deqn{
+  d\log s(t) = (\mu - v(t)/2)dt + \sqrt{v(t)}dw^s(t),
+}
+\deqn{
+  dv(t) = k(\theta - v(t))dt + \sigma_v\sqrt{v(t)}dw^v(t),
+}
+where the correlation between \eqn{w^s(t)} and \eqn{w^v(t)} is equal to
+\eqn{\rho}, i.e., \eqn{cov(w^s(t), w^v(t)) = \rho t}.
+The (conditional, with \eqn{v_0} given) return over period \eqn{[0,t]}
+is defined as \eqn{y_t \equiv \log s(t) - \log s(0)}
+which is decomposed as
+\deqn{
+  y_t = (\mu - \theta/2)t - \beta_t (v_0 -\theta) + \overline{y}_t|v_0,
+}
+where \eqn{\beta_t = (1-e^{-kt})/(2k)} and the centralized conditional
+return
+\deqn{
+  \overline{y}_t|v_0 = \frac{\sigma_v}{2k}e^{-kt}I\!E_t +
+  \left(\rho - \frac{\sigma_v}{2k}\right)I_t +
+  \sqrt{1-\rho^2}I_t^{*}.
+}
+Given the initial variance \eqn{v_0}, the function generate samples of
+the centralized conditional return \eqn{\overline{y}_t|v_0}.
+}
 \examples{
 # setting 1
 S = 100; K = 100; v0 = 0.010201; k = 6.21; theta = 0.019; sigma = 0.61
@@ -60,5 +86,5 @@ price_hest(10000, S, K, v0, tau, r, k, theta, moms, true_price)
 
 }
 \seealso{
-\code{\link[=r_hest]{r_hest()}}
+\code{\link[=rpearson]{rpearson()}}
 }

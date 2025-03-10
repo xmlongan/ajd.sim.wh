@@ -1,3 +1,19 @@
+#' printf function
+#'
+#' @description
+#' printf similar to printf in C languange
+#'
+#' @param fmt format like that in [sprintf]
+#' @param ... additional parameters
+#'
+#' @return None
+#' @export
+#'
+#' @examples
+#' fmt = "pi = %f"
+#' printf(fmt, pi)
+printf <- function(fmt, ...) { cat(sprintf(fmt, ...)) }
+
 #' Checking Conjugate or Equal of Two Complex Numbers
 #'
 #' @name conjugate_or_equal

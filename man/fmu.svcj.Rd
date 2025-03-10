@@ -12,7 +12,7 @@ A list with 8 elements:
 \item{\code{fmu1}}{The first conditional central moment, equals 0}
 \item{\code{fmu2}}{The second conditional central moment}
 \item{...}{The ... conditional central moment}
-\item{\code{fmu8}}{The eight conditional central moment}
+\item{\code{fmu8}}{The eighth conditional central moment}
 }
 Each of the formula consists of a list of 15 vectors:
 \describe{

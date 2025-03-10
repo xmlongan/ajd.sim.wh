@@ -395,7 +395,6 @@ pfd49 <- function(z, a, c4) {
 
 
 #' @rdname PFDecomp
-#' @export
 PFDecomp5 <- function(coef7) {
   a = coef7[1]; c0 = coef7[2]; c1 = coef7[3]; c2 = coef7[4]
   c3 = coef7[5]; c4 = coef7[6]; c5 = coef7[7]

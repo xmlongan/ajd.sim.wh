@@ -12,6 +12,8 @@
 #' @param r risk-less rate.
 #' @param k parameter \eqn{k}.
 #' @param theta parameter \eqn{\theta}.
+#' @param sigma parameter \eqn{\sigma}.
+#' @param rho parameter \eqn{\rho}.
 #' @param lmbd parameter \eqn{\lambda}, arrival rate of jumps in the
 #' underling asset price process and variance process.
 #' @param mu_v parameter \eqn{\mu_v}, mean of the jumps
@@ -34,7 +36,7 @@
 #'  Meanwhile the expected return per unit time of the SVCJ model becomes
 #'  \deqn{r - \lambda\bar{\mu},} see Broadie and Kaya (2006) for details.
 #'
-#' @seealso [ajd.sim.wh::r_svcj()]
+#' @seealso [ajd.sim.wh::rpearson()]
 #' @returns vector of pricing error and consumed time (simulation).
 #' @export
 #'
@@ -52,16 +54,16 @@
 #' moms = rep(0, 8) # centralized variable whose first moment = 0
 #' for (i in 2:8) {moms[i] = eval_mom_svcj(fmu.svcj[[i]], par)}
 #'
-#' n = 10000
-#' price_svcj(n, S, K, v0, tau, r, k, theta, lmbd, mu_v, mu_b, rhoJ, sigma_s,
+#' N = 10000
+#' price_svcj(N, S, K, v0, tau, r, k, theta, lmbd, mu_v, mu_b, rhoJ, sigma_s,
 #'            moms, true_price)
+#'
+#' price_svcj_unc(N, S, K, v0, tau, r, k, theta, sigma, rho, lmbd, mu_v, mu_b,
+#'                rhoJ, sigma_s)
 price_svcj <- function(N, S, K, v0, tau, r, k, theta, lmbd, mu_v, mu_b, rhoJ,
                        sigma_s, moms, true_price) {
-  # start.time = Sys.time()
   ts = proc.time()
-  # Y = r_svcj(N, moms)
-  Y = r_hest(N, moms)
-  # Y = r_hest2(N, moms)
+  Y = rpearson(N, moms)
   #
   mu = r - lmbd * mu_b
   beta = (1 - exp(-k * tau)) / (2 * k)
@@ -69,17 +71,40 @@ price_svcj <- function(N, S, K, v0, tau, r, k, theta, lmbd, mu_v, mu_b, rhoJ,
   #
   Ymean = lmbd * mu_v * beta / k + (rhoJ - 1/(2*k)) * lmbd * mu_v * tau
   Ymean = Ymean + lmbd * mu_s * tau + (mu - theta/2)*tau - beta*(v0 - theta)
-  #
   Y = Y + Ymean
-  #
   cprice_MC = exp(-r * tau) * mean(pmax(S * exp(Y) - K, 0))
-  # end.time = Sys.time()
+  #
   te = proc.time()
   tt = te - ts
-  # time.taken = end.time - start.time
-  # time.taken = difftime(end.time, start.time, units = "secs")
   error = cprice_MC - true_price
-  #
-  # return(c(error, as.numeric(time.taken)))
   return(c(error, tt[[3]]))
+}
+
+
+#' @rdname price_svcj
+#' @returns vector of price and consumed time (simulation).
+#' @export
+price_svcj_unc <- function(N, S, K, v0, tau, r, k, theta, sigma, rho, lmbd, mu_v,
+                           mu_b, rhoJ, sigma_s) {
+  mu = r - lmbd * mu_b
+  mu_s = log((1 + mu_b) * (1 - rhoJ*mu_v)) - sigma_s^2 / 2
+  h = tau
+  par = list(mu=mu, k=k, theta=theta, sigma=sigma, rho=rho, lmbd=lmbd,
+             mu_v=mu_v, rhoJ=rhoJ, mu_s=mu_s, sigma_s=sigma_s, h=h)
+  moms = rep(0, 8) # centralized variable whose first moment = 0
+  for (i in 2:8) {moms[i] = eval_mom_svcj_unc(ajd.sim.wh::fmu.svcj.unc[[i]], par)}
+  #
+  beta = (1 - exp(-k * tau)) / (2 * k)
+  #
+  ts = proc.time()
+  #
+  Y = rpearson(N, moms)
+  Ymean = lmbd * mu_v * beta / k + (rhoJ - 1/(2*k)) * lmbd * mu_v * tau
+  # Ymean = Ymean + lmbd * mu_s * tau + (mu - theta/2)*tau - beta*(v0 - theta)
+  Ymean = Ymean + lmbd * mu_s * tau + (mu - theta/2)*tau - beta*(lmbd*mu_v/k)
+  Y = Y + Ymean
+  cprice_MC = exp(-r * tau) * mean(pmax(S * exp(Y) - K, 0))
+  te = proc.time()
+  tt = te - ts
+  return(c(cprice_MC, tt[3]))
 }

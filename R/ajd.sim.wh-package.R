@@ -6,8 +6,9 @@
 #' @importFrom graphics mtext
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices png
-#' @importFrom PearsonDS qpearson
-#' @importFrom PearsonDS rpearson
 #' @importFrom stats runif
+#' @importFrom stats rnorm
+#' @importFrom stats rexp
+#' @importFrom stats rpois
 ## usethis namespace: end
 NULL

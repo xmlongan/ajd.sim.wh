@@ -20,7 +20,7 @@
 #'   \eqn{r - \lambda\bar{\mu}}.
 #' @param sigma_s parameter \eqn{\sigma_s}, standard deviation of the jumps,
 #'   see Broadie-Kaya (2006).
-#' @param moms vector of the first six|eight|ten conditional moments of
+#' @param moms vector of the first eight conditional moments of
 #'   the centralized return of the Heston SV model
 #' @param true_price theoretical true price of the option, calculable by
 #'  the Bates (1996) method.
@@ -39,11 +39,9 @@
 #' for (i in 2:8) {moms[i] = eval_mom_hest(fmu.hest[[i]], par_hest)}
 #'
 #' N = 10000
-#' price_svj(N, S, K, v0, tau, r, k, theta, lmbd, mu_b, sigma_s, moms,
-#'           true_price)
-price_svj <- function(N, S, K, v0, tau, r, k, theta, lmbd, mu_b, sigma_s,
-                      moms, true_price) {
-  # start.time = Sys.time()
+#' price_svj(N, S, K, v0, tau, r, k, theta, lmbd, mu_b, sigma_s,moms,true_price)
+price_svj <- function(N, S, K, v0, tau, r, k, theta, lmbd, mu_b, sigma_s, moms,
+                      true_price) {
   ts = proc.time()
   Y = r_svj(N, tau, lmbd, mu_b, sigma_s, moms)
   #
@@ -51,15 +49,9 @@ price_svj <- function(N, S, K, v0, tau, r, k, theta, lmbd, mu_b, sigma_s,
   beta = (1 - exp(-k * tau)) / (2 * k)
   # adding back the non-random part
   Y = Y + (mu - theta / 2) * tau - beta * (v0 - theta)
-  #
   cprice_MC = exp(-r * tau) * mean(pmax(S * exp(Y) - K, 0))
-  # end.time = Sys.time()
   te = proc.time()
   tt = te - ts
-  # time.taken = end.time - start.time
-  # time.taken = difftime(end.time, start.time, units = "secs")
   error = cprice_MC - true_price
-  #
-  # return(c(error, as.numeric(time.taken)))
   return(c(error, tt[[3]]))
 }

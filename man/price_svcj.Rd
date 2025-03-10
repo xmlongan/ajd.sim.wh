@@ -2,6 +2,7 @@
 % Please edit documentation in R/price_svcj.R
 \name{price_svcj}
 \alias{price_svcj}
+\alias{price_svcj_unc}
 \title{Pricing the European Call Option Under the SVCJ Model}
 \usage{
 price_svcj(
@@ -20,6 +21,24 @@ price_svcj(
   sigma_s,
   moms,
   true_price
+)
+
+price_svcj_unc(
+  N,
+  S,
+  K,
+  v0,
+  tau,
+  r,
+  k,
+  theta,
+  sigma,
+  rho,
+  lmbd,
+  mu_v,
+  mu_b,
+  rhoJ,
+  sigma_s
 )
 }
 \arguments{
@@ -58,9 +77,15 @@ centralized return.}
 
 \item{true_price}{theoretical true price of the option, calculable by
 the Duffie et al. (2000) method.}
+
+\item{sigma}{parameter \eqn{\sigma}.}
+
+\item{rho}{parameter \eqn{\rho}.}
 }
 \value{
 vector of pricing error and consumed time (simulation).
+
+vector of price and consumed time (simulation).
 }
 \description{
 Pricing the European call option under the SVCJ model using the
@@ -88,10 +113,13 @@ par = list(v0=v0, mu=mu, k=k, theta=theta, sigma=sigma, rho=rho, lmbd=lmbd,
 moms = rep(0, 8) # centralized variable whose first moment = 0
 for (i in 2:8) {moms[i] = eval_mom_svcj(fmu.svcj[[i]], par)}
 
-n = 10000
-price_svcj(n, S, K, v0, tau, r, k, theta, lmbd, mu_v, mu_b, rhoJ, sigma_s,
+N = 10000
+price_svcj(N, S, K, v0, tau, r, k, theta, lmbd, mu_v, mu_b, rhoJ, sigma_s,
            moms, true_price)
+
+price_svcj_unc(N, S, K, v0, tau, r, k, theta, sigma, rho, lmbd, mu_v, mu_b,
+               rhoJ, sigma_s)
 }
 \seealso{
-\code{\link[=r_svcj]{r_svcj()}}
+\code{\link[=rpearson]{rpearson()}}
 }

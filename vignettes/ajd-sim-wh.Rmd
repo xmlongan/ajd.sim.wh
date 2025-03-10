@@ -30,7 +30,7 @@ moms = rep(0, 8)
 for (i in 2:8) {moms[i] = eval_mom_hest(fmu.hest[[i]], par_hest)}
 
 N = 1000 # number of samples
-Y = r_hest(1000, moms)
+Y = rpearson(1000, moms)
 
 beta = (1 - exp(-k * tau)) / (2 * k)
 Ymean = (r - theta/2) * tau - beta * (v0 - theta)
@@ -79,7 +79,7 @@ par = list(v0=v0, mu=mu, k=k, theta=theta, sigma=sigma, rho=rho, lmbd=lmbd,
 moms = rep(0, 8) # centralized variable whose first moment = 0
 for (i in 2:8) {moms[i] = eval_mom_svcj(fmu.svcj[[i]], par)}
 
-Y = r_svcj(n, moms)
+Y = rpearson(n, moms)
 
 beta = (1 - exp(-k * tau)) / (2 * k)
 Ymean = lmbd * mu_v * beta / k + (rhoJ - 1/(2*k)) * lmbd * mu_v * tau

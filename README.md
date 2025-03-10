@@ -51,7 +51,7 @@ moms = rep(0, 8)
 for (i in 2:8) {moms[i] = eval_mom_hest(ajd.sim.wh::fmu.hest[[i]], par_hest)}
 
 N = 1000 # number of samples
-Y = ajd.sim.wh::r_hest(1000, moms)
+Y = ajd.sim.wh::rpearson(1000, moms)
 
 beta = (1  -exp(-k * tau)) / (2 * k)
 Ymean = (r - theta/2) * tau - beta * (v0 - theta)
@@ -64,9 +64,9 @@ hist(Y, main="Heston SV model")
 
 If you want to simulate samples from the other two SV models, use:
 
-- `r_svj()` for SVJ model,
+- `price_svj()` for the SVJ model,
 
-- `r_svcj()` for SVCJ model.
+- `price_svcj()` for the SVCJ model.
 
 ## Pricing the European call option Using Monte Carlo simulation
 

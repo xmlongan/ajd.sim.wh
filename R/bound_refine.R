@@ -28,7 +28,7 @@
 #'
 #' @examples
 #' U = runif(1)
-bd_refine <- function(UC, px, dx, x, pfd, pfd_tp) {
+bound_refine <- function(UC, px, dx, x, pfd, pfd_tp) {
   lui = bound(UC, px)
   # lower bound index, upper bound index, target index
   l = lui[1]; u = lui[2]; i = lui[3]
@@ -43,6 +43,7 @@ bd_refine <- function(UC, px, dx, x, pfd, pfd_tp) {
 }
 
 #' @rdname bound_refine
+#' @export
 bound <- function(UC, px) {
   l = 1; u = length(px); # i = 0: not found
   #
@@ -56,6 +57,7 @@ bound <- function(UC, px) {
 }
 
 #' @rdname bound_refine
+#' @export
 refine <- function(UC, lb, ub, px_lb, dx_lb, pfd, pfd_tp) {
   # Newton-Raphson Method
   x = lb - (px_lb - UC) / dx_lb
