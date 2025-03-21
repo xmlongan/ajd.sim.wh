@@ -2,6 +2,7 @@
 
 export(PFDecomp3)
 export(PFDecomp4)
+export(adjust_lb_ub)
 export(bound)
 export(bound_refine)
 export(dpearson10)

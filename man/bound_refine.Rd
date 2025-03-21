@@ -25,9 +25,9 @@ refine(UC, lb, ub, px_lb, dx_lb, pfd, pfd_tp)
 
 \item{pfd_tp}{type of \code{pfd}:
 \itemize{
-\item 3: list of x1(real), A1;        x2(complex), A2, B2
-\item 4: list of x1(complex), A1, B1; x2(complex), A2, B2
-\item 5: list of x1(real), A1;        x2(complex), A2, B2; x3(complex), A3, B3
+\item 3: result of \code{\link[=PFDecomp3]{PFDecomp3()}}
+\item 4: result of \code{\link[=PFDecomp4]{PFDecomp4()}}
+\item 5: result of \code{\link[=PFDecomp5]{PFDecomp5()}}
 }}
 
 \item{lb}{lower bound of the target quantile}
@@ -40,13 +40,13 @@ refine(UC, lb, ub, px_lb, dx_lb, pfd, pfd_tp)
 }
 \value{
 \itemize{
-\item \code{bd_refine}: scalar, quantile point \eqn{x} such that \eqn{P(X\le x)=U}.
+\item \code{bound_refine}: scalar, quantile point \eqn{x} such that \eqn{P(X\le x)=U}.
 \item \code{bound}: vector (lower_bound_index, upper_bound_index, target_index).
-\item \code{refine}: scalar as that in \code{bd_refine}.
+\item \code{refine}: scalar as that in \code{bound_refine}.
 }
 }
 \description{
-Bound and refine the target quantile, \code{bd_refine}.
+Bound and refine the target quantile, \code{bound_refine}.
 Get the lower and upper bound of the target quantile, \code{bound}.
 Refine within the bounds to find the target quantile, \code{refine}.
 }
