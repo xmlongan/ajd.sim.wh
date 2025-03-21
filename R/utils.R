@@ -22,7 +22,6 @@ printf <- function(fmt, ...) { cat(sprintf(fmt, ...)) }
 #' @param eps relative error
 #'
 #' @returns bool `TRUE` or `FALSE`
-#'
 #' @export
 #'
 #' @examples
@@ -51,7 +50,19 @@ is.equal <- function(z1, z2, eps = 1e-10) {
   }
 }
 
-
+#' Adjust lower and upper bounds of the support
+#'
+#' @description
+#' Adjust the lower and upper bounds of the support to make sure no roots
+#' lying within the support
+#'
+#' @param lb lower bound
+#' @param ub upper bound
+#' @param pfd result of the partial fraction decomposition
+#'
+#' @return a vector of the new lower and upper bounds
+#' @export
+#'
 adjust_lb_ub <- function(lb, ub, pfd) {
   if (pfd$type == 43 || pfd$type == 45) {
     # two real: x1 = x2 or 4 real: x1 = x2 = x3 = x4

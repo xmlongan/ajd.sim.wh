@@ -2,7 +2,7 @@
 #'
 #' @name bound_refine
 #' @description
-#' Bound and refine the target quantile, `bd_refine`.
+#' Bound and refine the target quantile, `bound_refine`.
 #' Get the lower and upper bound of the target quantile, `bound`.
 #' Refine within the bounds to find the target quantile, `refine`.
 #'
@@ -16,14 +16,14 @@
 #' @param dx_lb un-normalized density of the lower bound `lb`
 #' @param pfd list of Partial Fraction Decomposition results
 #' @param pfd_tp type of `pfd`:
-#'  - 3: list of x1(real), A1;        x2(complex), A2, B2
-#'  - 4: list of x1(complex), A1, B1; x2(complex), A2, B2
-#'  - 5: list of x1(real), A1;        x2(complex), A2, B2; x3(complex), A3, B3
+#'  - 3: result of [PFDecomp3()]
+#'  - 4: result of [PFDecomp4()]
+#'  - 5: result of [PFDecomp5()]
 #'
 #' @return
-#'  - `bd_refine`: scalar, quantile point \eqn{x} such that \eqn{P(X\le x)=U}.
+#'  - `bound_refine`: scalar, quantile point \eqn{x} such that \eqn{P(X\le x)=U}.
 #'  - `bound`: vector (lower_bound_index, upper_bound_index, target_index).
-#'  - `refine`: scalar as that in `bd_refine`.
+#'  - `refine`: scalar as that in `bound_refine`.
 #' @export
 #'
 #' @examples

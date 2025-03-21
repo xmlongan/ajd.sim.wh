@@ -36,42 +36,22 @@ rpearson <- function(n, moms) {
   #
   # mode = -coefs[1] # -a: mode of the distribution
   stdmoment = ajd.sim.kbf::stdmom(moms[1:4]) # mean, var, skew, kurt
-  sd = sqrt(stdmoment[2])
-  skew = stdmoment[3]
+  lbub = PearsonDS::qpearson(c(0.000001, 0.999999), moments = stdmoment)
+  lbub = adjust_lb_ub(lbub[1], lbub[2], pfd)
   #
   N = 10000
-  if (skew < 0) {        # left-tailed
-    if (skew < -1) {
-      x = seq(-8 * sd, 4 * sd, length.out = N)
-    } else {
-      x = seq(-7 * sd, 5 * sd, length.out = N)
-    }
-  } else if (skew > 0) { # right-tailed
-    if (skew > 1) {
-      x = seq(-4 * sd, 8 * sd, length.out = N)
-    } else {
-      x = seq(-5 * sd, 7 * sd, length.out = N)
-    }
-  } else {               # symmetric
-    x = seq(-6 * sd, 6 * sd, length.out = N)
-  }
+  x = seq(lbub[1], lbub[2], length.out = N)
   # Discretize and evaluate
   #
   dx = dpearson(x, pfd) # un-normalized density
   # trapezoidal rule
   h = x[2] - x[1]
   # cumsum the middle ones except the first and the last
-  cum = rep(0, N - 2)
-  cum[1] = dx[2] * h
-  for (i in 2:(N - 2)) {
-    cum[i] = cum[i - 1] + dx[i + 1] * h # may too big number inside!
-  }
+  cum = cumsum(dx[2:(N-1)] * h)  # may too big number inside!
   #
-  px = rep(0, N)          # un-normalized cumulative probability
+  px = rep(0, N)        # un-normalized cumulative probability
   px[2] = (dx[1] + dx[2]) * h / 2
-  for (i in 3:N) {
-    px[i] = (dx[1] + dx[i]) * h / 2 + cum[i - 2]
-  }
+  px[3:N] = (dx[1] + dx[3:N]) * h / 2 + cum
   C = px[N] # constant
   #
   Us = stats::runif(n)
