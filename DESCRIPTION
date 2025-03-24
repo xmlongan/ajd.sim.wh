@@ -1,5 +1,5 @@
 Package: ajd.sim.wh
-Title: Simulation of Affine Jump Diffusions Using Wu-Hu Method
+Title: Simulation of Affine Jump Diffusions Via the Wu-Hu Method
 Version: 1.0.0
 Authors@R: 
     person("Yan-Feng", "Wu", , "yanfengwu13@fudan.edu.cn", role = c("aut", "cre"),
