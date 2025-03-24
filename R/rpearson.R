@@ -35,7 +35,9 @@ rpearson <- function(n, moms) {
   # Determine support of the distribution
   #
   stdmoment = ajd.sim.kbf::stdmom(moms[1:4]) # mean, var, skew, kurt
+  sd = sqrt(stdmoment[2])
   lbub = PearsonDS::qpearson(c(0.000001, 0.999999), moments = stdmoment)
+  lbub = c(lbub[1] - sd, lbub[2] + sd)  # enlarge the support
   # make sure no roots lying within
   lbub = adjust_lb_ub(lbub[1], lbub[2], pfd)
   #
